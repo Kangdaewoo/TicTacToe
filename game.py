@@ -1,8 +1,13 @@
+SIZE = 3
+
+
 class Board:
     def __init__(self):
-        self._cells = [[0, 0, 0], 
-                       [0, 0, 0], 
-                       [0, 0, 0]]
+        self._cells = []
+        for x in range(SIZE):
+            self._cells.append([])
+            for y in range(SIZE):
+                self._cells[x].append(0)
     
     def getRow(self, n):
         """
@@ -15,7 +20,7 @@ class Board:
         Returns nth column.
         """
         toReturn = []
-        for i in range(3):
+        for i in range(SIZE):
             toReturn.append(self._cells[i][n])
         return toReturn
     
@@ -24,7 +29,7 @@ class Board:
         Returns diagonals.
         """
         toReturn = [[], []]
-        for i in range(3):
+        for i in range(SIZE):
             toReturn[0].append(self._cells[i][i])
             toReturn[1].append(self._cells[i][2 - i])
         return toReturn
@@ -34,15 +39,15 @@ class Board:
     
     def copy(self):
         newBoard = Board()
-        for x in range(3):
-            for y in range(3):
+        for x in range(SIZE):
+            for y in range(SIZE):
                 newBoard._cells[x][y] = self._cells[x][y]
         return newBoard
     
     def getNeutrals(self):
         toReturn = []
-        for x in range(3):
-            for y in range(3):
+        for x in range(SIZE):
+            for y in range(SIZE):
                 if self._cells[x][y] == 0:
                     toReturn.append((x, y))
         return toReturn
@@ -74,14 +79,14 @@ class GameState:
     
     def _evaluateLine(self, line):
         players = [0, 0]
-        for i in range(3):
+        for i in range(SIZE):
             if line[i] == 1:
                 players[1] += 1
             elif line[i] == -1:
                 players[0] += 1
-        if players[0] == 3:
+        if players[0] == SIZE:
             return -300
-        elif players[1] == 3:
+        elif players[1] == SIZE:
             return 300
         if players[0] == 0:
             return players[1] * 1
@@ -90,10 +95,13 @@ class GameState:
         return 0
     
     def evaluateState(self, n):
+        """
+        Returns evaluation of nth state.
+        """
         evaluations = 0
-        for i in range(3):
+        for i in range(SIZE):
             evaluations += self._evaluateLine(self._states[n].getRow(i))
-        for i in range(3):
+        for i in range(SIZE):
             evaluations += self._evaluateLine(self._states[n].getCol(i))
         diags = self._states[n].getDiags()
         evaluations += self._evaluateLine(diags[0])
@@ -101,43 +109,45 @@ class GameState:
         return evaluations
     
     def gameOver(self, n):
-        for i in range(3):
-            if sum(self._states[n].getRow(i)) == 3 or sum(self._states[n].getRow(i)) == -3:
+        for i in range(SIZE):
+            if sum(self._states[n].getRow(i)) == SIZE or sum(self._states[n].getRow(i)) == -SIZE:
                 return True
-            if sum(self._states[n].getCol(i)) == 3 or sum(self._states[n].getCol(i)) == -3:
+            if sum(self._states[n].getCol(i)) == SIZE or sum(self._states[n].getCol(i)) == -SIZE:
                 return True
         diags = self._states[n].getDiags()
-        if sum(diags[0]) == 3 or sum(diags[0]) == -3:
+        if sum(diags[0]) == SIZE or sum(diags[0]) == -SIZE:
             return True
-        if sum(diags[1]) == 3 or sum(diags[1]) == -3:
+        if sum(diags[1]) == SIZE or sum(diags[1]) == -SIZE:
             return True
-        return n == 9
+        return n == SIZE * SIZE
     
     def getWinner(self, n):
-        for i in range(3):
-            if sum(self._states[n].getRow(i)) == 3:
+        for i in range(SIZE):
+            if sum(self._states[n].getRow(i)) == SIZE:
                 return 1
-            if sum(self._states[n].getRow(i)) == -3:
+            if sum(self._states[n].getRow(i)) == -SIZE:
                 return -1
-            if sum(self._states[n].getCol(i)) == 3:
+            if sum(self._states[n].getCol(i)) == SIZE:
                 return 1
-            if sum(self._states[n].getCol(i)) == -3:
+            if sum(self._states[n].getCol(i)) == -SIZE:
                 return -1
         diags = self._states[n].getDiags()
-        if sum(diags[0]) == 3:
+        if sum(diags[0]) == SIZE:
             return 1
-        if sum(diags[0]) == -3:
+        if sum(diags[0]) == -SIZE:
             return -1
-        if sum(diags[1]) == 3:
+        if sum(diags[1]) == SIZE:
             return 1
-        if sum(diags[1]) == -3:
+        if sum(diags[1]) == -SIZE:
             return -1  
         return 0
 
 class TicTacToe:
     def __init__(self):
         self._gameState = GameState()
+        # Indicates index of current state.
         self._index = 0
+        # Players are represented as 1 or -1 where 1 is user and -1 is AI.
         self._turn = 1
     
     def getGameState(self):
@@ -160,7 +170,7 @@ class TicTacToe:
     
     def printGame(self):
         currentBoard = self._gameState.getBoard(self._index)
-        for i in range(3):
+        for i in range(SIZE):
             print(currentBoard.getRow(i))
     
     def gameOver(self):

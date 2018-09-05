@@ -3,6 +3,7 @@ from game import TicTacToe
 from algorithm import Algorithm
 
 
+# Globally declare so they can be used in Cell class.
 game = TicTacToe()
 algorithm = Algorithm()
 frames = [[None, None, None],
@@ -29,16 +30,26 @@ class Cell(Frame):
         self.message = message
     
     def deleteObjects(self):
+        """
+        Called when game is over to reset the canvas.
+        """
         for ob in self._objects:
             self._canvas.delete(ob)
     
     def drawX(self):
+        """
+        Marks AI's move.
+        """
         rect1 = self._canvas.create_polygon(self._coordinatesRect1, fill='black')
         rect2 = self._canvas.create_polygon(self._coordinatesRect2, fill='black')
         self._objects.append(rect1)
         self._objects.append(rect2)
     
     def drawO(self, event):
+        """
+        Marks user's move.
+        """
+        # Ignore if game is over.
         if game.gameOver():
             for x in range(3):
                 for y in range(3):
@@ -76,6 +87,7 @@ if __name__ == '__main__':
                 color = 'gray'
             newFrame.message = message
     
+    # Game loop.
     while True:
         if game.whoseTurn() == -1:
             if not game.gameOver():
