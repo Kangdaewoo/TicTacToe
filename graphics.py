@@ -56,6 +56,7 @@ class Cell(Frame):
                     frames[x][y].deleteObjects()
             game.setIndex(0)
             game.setTurn(1)
+            self.message.set('Make your move!')
             return
         
         if not game.makeMove(self._cellNumber):
