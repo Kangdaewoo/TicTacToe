@@ -38,6 +38,9 @@ class Board:
         self._cells[move[0]][move[1]] = player
     
     def copy(self):
+        """
+        Returns a copy of this board.
+        """
         newBoard = Board()
         for x in range(SIZE):
             for y in range(SIZE):
@@ -45,6 +48,9 @@ class Board:
         return newBoard
     
     def getNeutrals(self):
+        """
+        Returns a list of cells that no moves are made on.
+        """
         toReturn = []
         for x in range(SIZE):
             for y in range(SIZE):
@@ -78,20 +84,29 @@ class GameState:
         return self._states[n]
     
     def _evaluateLine(self, line):
+        """
+        Evaluation depends on if one player can own this line.
+        """
         players = [0, 0]
         for i in range(SIZE):
             if line[i] == 1:
                 players[1] += 1
             elif line[i] == -1:
                 players[0] += 1
+        
+        # Game over.
         if players[0] == SIZE:
             return -300
         elif players[1] == SIZE:
             return 300
+        
+        # A player can own this line.
         if players[0] == 0:
             return players[1] * 1
         elif players[1] == 0:
             return players[0] * -1
+        
+        # Line is worth nothing. None of the players can own this line.
         return 0
     
     def evaluateState(self, n):
@@ -101,7 +116,6 @@ class GameState:
         evaluations = 0
         for i in range(SIZE):
             evaluations += self._evaluateLine(self._states[n].getRow(i))
-        for i in range(SIZE):
             evaluations += self._evaluateLine(self._states[n].getCol(i))
         diags = self._states[n].getDiags()
         evaluations += self._evaluateLine(diags[0])

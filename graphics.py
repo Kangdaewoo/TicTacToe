@@ -49,8 +49,9 @@ class Cell(Frame):
         """
         Marks user's move.
         """
-        # Ignore if game is over.
+        # Do not mark if game is over.
         if game.gameOver():
+            # Reset game and delete markings.
             for x in range(3):
                 for y in range(3):
                     frames[x][y].deleteObjects()

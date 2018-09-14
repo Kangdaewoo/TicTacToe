@@ -6,8 +6,11 @@ class Algorithm:
         return self.minimaxSearch(gameState, index, player)[0]
     
     def minimaxSearch(self, gameState, index, player):
+        """
+        Recursively find a best move that gives the most evaluation.
+        """
         if gameState.gameOver(index):
-            # (11 - index) gives more points on the evaluation of early games.
+            # (11 - index) gives more points on the evaluation of early finished games.
             return (None, gameState.evaluateState(index) * (11 - index))
         
         nextPlayer = 0
